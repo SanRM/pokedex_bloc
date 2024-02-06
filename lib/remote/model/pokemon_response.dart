@@ -1,50 +1,28 @@
-class PokemonResponse {
-  int? count;
-  String? next;
-  String? previous;
-  List<Results>? results;
+// Asumiendo que tienes una clase Results y PokemonResponse definidas en algún lugar
+class Results {
+  final String name;
+  final String url;
 
-  PokemonResponse({this.count, this.next, this.previous, this.results});
+  Results({required this.name, required this.url});
 
-  PokemonResponse.fromJson(Map<String, dynamic> json) {
-    count = json['count'];
-    next = json['next'];
-    previous = json['previous'];
-    if (json['results'] != null) {
-      results = <Results>[];
-      json['results'].forEach((v) {
-        results!.add(Results.fromJson(v));
-      });
-    }
-  }
-
-  Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = <String, dynamic>{};
-    data['count'] = count;
-    data['next'] = next;
-    data['previous'] = previous;
-    if (results != null) {
-      data['results'] = results!.map((v) => v.toJson()).toList();
-    }
-    return data;
+  factory Results.fromJson(Map<String, dynamic> json) {
+    return Results(
+      name: json['name'],
+      url: json['url'],
+    );
   }
 }
 
-class Results {
-  String? name;
-  String? url;
+class PokemonResponse {
+  final List<Results> results;
 
-  Results({this.name, this.url});
+  PokemonResponse({required this.results});
 
-  Results.fromJson(Map<String, dynamic> json) {
-    name = json['name'];
-    url = json['url'];
-  }
-
-  Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = <String, dynamic>{};
-    data['name'] = name;
-    data['url'] = url;
-    return data;
+  factory PokemonResponse.fromJson(Map<String, dynamic> json) {
+    return PokemonResponse(
+      results: (json['results'] as List)
+          .map((i) => Results.fromJson(i))
+          .toList(),
+    );
   }
 }
